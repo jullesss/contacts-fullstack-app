@@ -21,7 +21,7 @@ const handleAppError = (
   }
 
   return res.status(500).json({
-    message: "Internal Server Error",
+    message: "Erro interno do servidor",
   });
 };
 
