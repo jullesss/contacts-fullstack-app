@@ -8,7 +8,7 @@ import { User } from "../entities/user.entity";
 const createUserService = async (
   data: TUserRequest
 ): Promise<TUserResponse> => {
-  const { email, firstName, lastName, password } = data;
+  const { email, firstName, lastName, phone, password } = data;
 
   const findUser: User | null = await userRepo.findOne({
     where: { email },
@@ -23,6 +23,7 @@ const createUserService = async (
   const user = userRepo.create({
     firstName,
     lastName,
+    phone,
     email,
     password: hashPassword,
   });
