@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { userRepo } from "../data-source";
+import { User } from "../entities/user.entity";
 
 const ensureIsTheOwner = async (
   req: Request,
@@ -8,7 +9,7 @@ const ensureIsTheOwner = async (
 ) => {
   const userMail = res.locals.userMail;
 
-  const userInfo = await userRepo.findOne({
+  const userInfo: User | null = await userRepo.findOne({
     where: {
       email: userMail,
     },

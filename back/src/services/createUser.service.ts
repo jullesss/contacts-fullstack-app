@@ -3,13 +3,14 @@ import { userRepo } from "../data-source";
 import { TUserRequest, TUserResponse } from "../interfaces/user.interface";
 import { AppError } from "../errors/appError";
 import { userSchemaResponse } from "../schemas/user.schema";
+import { User } from "../entities/user.entity";
 
 const createUserService = async (
   data: TUserRequest
 ): Promise<TUserResponse> => {
   const { email, firstName, lastName, password } = data;
 
-  const findUser = await userRepo.findOne({
+  const findUser: User | null = await userRepo.findOne({
     where: { email },
   });
 
