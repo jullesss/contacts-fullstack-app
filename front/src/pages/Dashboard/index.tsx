@@ -32,15 +32,23 @@ export const Dashboard = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchValue, setSearchValue] = useState("");
 
-  useEffect(() => {
-    (async () => {
-      const personalInfoResponse = await api.get<User>("user");
-      setPersonalInfo(personalInfoResponse.data);
+  useEffect(
+    () => {
+      (async () => {
+        const personalInfoResponse = await api.get<User>("user");
+        setPersonalInfo(personalInfoResponse.data);
+        getContacts();
+      })();
+    },
+    [
+      /* contacts */
+    ]
+  );
 
-      const contactsResponse = await api.get<Contact[]>("contact");
-      setContacts(contactsResponse.data);
-    })();
-  }, [contacts]);
+  const getContacts = async () => {
+    const contactsResponse = await api.get<Contact[]>("contact");
+    setContacts(contactsResponse.data);
+  };
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const toggleModal = () => setIsOpenModal(!isOpenModal);
@@ -89,11 +97,10 @@ export const Dashboard = () => {
 
       if (searchResults.length === 0) {
         setContacts(contacts);
+        setSearchValue("");
       }
-    }
-
-    if (searchValue === "") {
-      setContacts(contacts);
+    } else {
+      getContacts();
     }
     setSearchValue("");
   };
