@@ -8,4 +8,22 @@ export const schema = z.object({
   password: z.string().nonempty({ message: "Senha é obrigatória" }),
 });
 
+export const updateUserSchema = z.object({
+  /*   id: z.number(),
+  createdAt: z.string().optional(), */
+  firstName: z
+    .string()
+
+    .optional(),
+  lastName: z.string().optional(),
+  phone: z
+    .string()
+
+    .optional(),
+  email: z.string().optional(),
+  password: z.string().optional(),
+});
+
 export type RegisterData = z.infer<typeof schema>;
+
+export type UpdateData = z.infer<typeof updateUserSchema>;

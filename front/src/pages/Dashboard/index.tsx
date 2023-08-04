@@ -5,6 +5,18 @@ import { api } from "../../services/api";
 import { ModalAddContact } from "../../components/modalAddContact/index.tsx";
 import { ModalEditUser } from "../../components/modalEditUser/index.tsx";
 import { ModalEditContact } from "../../components/modalEditContact/index.tsx";
+import { ModalDeleteAcc } from "../../components/modalDeleteAcc/index.tsx";
+import { ModalDeleteContact } from "../../components/modalDeleteContact/index.tsx";
+
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  createdAt: string;
+  password: string;
+}
 
 export interface Contact {
   id: number;
@@ -16,10 +28,19 @@ export interface Contact {
 }
 
 export const Dashboard = () => {
+  const [personalInfo, setPersonalInfo] = useState<User>();
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [personalInfo, setPersonalInfo] = useState<Contact>();
+  const [searchValue, setSearchValue] = useState("");
 
-  const [toEditContact, setToEditContact] = useState<Contact>();
+  useEffect(() => {
+    (async () => {
+      const personalInfoResponse = await api.get<User>("user");
+      setPersonalInfo(personalInfoResponse.data);
+
+      const contactsResponse = await api.get<Contact[]>("contact");
+      setContacts(contactsResponse.data);
+    })();
+  }, [contacts]);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const toggleModal = () => setIsOpenModal(!isOpenModal);
@@ -27,23 +48,54 @@ export const Dashboard = () => {
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const toggleEditModal = () => setIsOpenEditModal(!isOpenEditModal);
 
+  const [isOpenDeleteAccModal, setIsOpenDeleteAccModal] = useState(false);
+  const toggleDeleteAccModal = () => {
+    setIsOpenDeleteAccModal(!isOpenDeleteAccModal);
+  };
+
+  const [toEditContact, setToEditContact] = useState<Contact>();
   const [isOpenEditContactModal, setIsOpenEditContactModal] = useState(false);
   const toggleEditContactModal = () =>
     setIsOpenEditContactModal(!isOpenEditContactModal);
-
-  useEffect(() => {
-    (async () => {
-      const personalInfoResponse = await api.get<Contact>("user");
-      setPersonalInfo(personalInfoResponse.data);
-
-      const contactsResponse = await api.get<Contact[]>("contact");
-      setContacts(contactsResponse.data);
-    })();
-  }, []);
-
   const openEditContactModal = (contact: Contact) => {
-    setIsOpenEditContactModal(!isOpenEditContactModal);
+    toggleEditContactModal();
     setToEditContact(contact);
+  };
+
+  const [toDeleteContact, setToDeleteContact] = useState<Contact>();
+  const [isOpenDeleteContactModal, setIsOpenDeleteContactModal] =
+    useState(false);
+  const toggleDeleteContactModal = () =>
+    setIsOpenDeleteContactModal(!isOpenDeleteContactModal);
+  const openDeleteContactModal = (contact: Contact) => {
+    toggleDeleteContactModal();
+    setToDeleteContact(contact);
+  };
+
+  const search = (event: { preventDefault: () => void }) => {
+    console.log(searchValue);
+    event.preventDefault();
+
+    if (searchValue !== "") {
+      const searchResults = contacts.filter(
+        (contact) =>
+          contact.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          contact.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          contact.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+          contact.phone.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      console.log(searchResults);
+      setContacts(searchResults);
+
+      if (searchResults.length === 0) {
+        setContacts(contacts);
+      }
+    }
+
+    if (searchValue === "") {
+      setContacts(contacts);
+    }
+    setSearchValue("");
   };
 
   return (
@@ -57,12 +109,25 @@ export const Dashboard = () => {
         <span> Conta crida em {personalInfo?.createdAt}</span>
         <div onClick={toggleEditModal}>
           <BiEditAlt />
-          <div>
-            <BsTrash />
-          </div>
+        </div>
+        <div onClick={toggleDeleteAccModal}>
+          <BsTrash />
         </div>
       </section>
       <main>
+        <div>
+          <label htmlFor="searchContact">Pesquise um contato</label>
+          <input
+            type="text"
+            id="searchContact"
+            placeholder="Digite o nome..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          <button onClick={search} type="submit">
+            Pesquisar
+          </button>
+        </div>
         <button type="button" onClick={toggleModal}>
           Criar novo contato
         </button>
@@ -83,7 +148,7 @@ export const Dashboard = () => {
                 <div onClick={() => openEditContactModal(contact)}>
                   <BiEditAlt />
                 </div>
-                <div>
+                <div onClick={() => openDeleteContactModal(contact)}>
                   <BsTrash />
                 </div>
               </li>
@@ -97,20 +162,33 @@ export const Dashboard = () => {
         <ModalEditUser
           personalInfo={personalInfo}
           toggleModal={toggleEditModal}
+          setPersonalInfo={setPersonalInfo}
         >
           Editar
         </ModalEditUser>
       )}
 
+      {isOpenDeleteAccModal && (
+        <ModalDeleteAcc
+          personalInfo={personalInfo}
+          toggleModal={toggleDeleteAccModal}
+        />
+      )}
+
       {isOpenEditContactModal && (
         <ModalEditContact
           toEditContact={toEditContact}
-          setContact={setContacts}
-          /*           contact={contact}
-           */ toggleModal={toggleEditContactModal}
+          toggleModal={toggleEditContactModal}
         >
           Editar
         </ModalEditContact>
+      )}
+
+      {isOpenDeleteContactModal && (
+        <ModalDeleteContact
+          toDeleteContact={toDeleteContact}
+          toggleModal={toggleDeleteContactModal}
+        ></ModalDeleteContact>
       )}
     </>
   );

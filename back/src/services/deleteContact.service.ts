@@ -2,8 +2,6 @@ import { contactRepo } from "../data-source";
 import { Contact } from "../entities/contact.entity";
 import { User } from "../entities/user.entity";
 import { AppError } from "../errors/appError";
-import { TContactResponse } from "../interfaces/contact.interface";
-import { contactSchemaResponse } from "../schemas/contact.schema";
 
 const deleteContactService = async (
   dataId: number,

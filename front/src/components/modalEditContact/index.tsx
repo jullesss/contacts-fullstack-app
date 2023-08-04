@@ -1,35 +1,36 @@
 import React from "react";
-import { Dispatch } from "react";
 import { Contact } from "../../pages/Dashboard/index.tsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../services/api";
 import { Modal } from "../../components/modal/index.tsx";
-import { EditContactData, schemaaaa } from "./validator.ts";
+import { EditContactData, schema } from "./validator.ts";
 
 export interface ModalEditContact {
   toEditContact: Contact | undefined;
-  /*   contact: Contact | undefined;
-   */ toggleModal: () => void;
-  setContact: Dispatch<React.SetStateAction<Contact[]>>;
+  toggleModal: () => void;
   children: string;
 }
 
 export const ModalEditContact = ({
-  setContact,
   toggleModal,
   toEditContact,
 }: ModalEditContact) => {
   const { register, handleSubmit } = useForm<EditContactData>({
-    resolver: zodResolver(schemaaaa),
+    resolver: zodResolver(schema),
   });
-  console.log(toEditContact);
   const id: number | undefined = toEditContact?.id;
 
   const editContact = async (data: EditContactData) => {
-    const response = await api.patch<Contact>(`/contact/${id}/`, data);
+    const newData = {
+      firstName:
+        data.firstName == "" ? toEditContact?.firstName : data.firstName,
+      lastName: data.lastName == "" ? toEditContact?.lastName : data.lastName,
+      phone: data.phone == "" ? toEditContact?.phone : data.phone,
+      email: data.email == "" ? toEditContact?.email : data.email,
+    };
+    await api.patch<Contact>(`/contact/${id}/`, newData);
 
-    setContact((previousContact) => [response.data, ...previousContact]);
     toggleModal();
   };
 
@@ -62,7 +63,7 @@ export const ModalEditContact = ({
 
         <label htmlFor="email">Email</label>
         <input
-          type="email"
+          type="text"
           id="email"
           {...register("email")}
           placeholder={toEditContact?.email}

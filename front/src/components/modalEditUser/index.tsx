@@ -2,22 +2,39 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Modal } from "../../components/modal/index.tsx";
-import { RegisterData, schema } from "../../components/modalSignUp/validator";
+import {
+  UpdateData,
+  updateUserSchema,
+} from "../../components/modalSignUp/validator";
 import { api } from "../../services/api.ts";
-import { Contact } from "pages/Dashboard/index.tsx";
+import { User } from "pages/Dashboard/index.tsx";
 
 export interface ModalEditUser {
-  personalInfo: Contact | undefined;
+  personalInfo: User | undefined;
   toggleModal: () => void;
   children: string;
+  setPersonalInfo: React.Dispatch<React.SetStateAction<User | undefined>>;
 }
-export const ModalEditUser = ({ toggleModal, personalInfo }: ModalEditUser) => {
-  const { register, handleSubmit } = useForm<RegisterData>({
-    resolver: zodResolver(schema),
+export const ModalEditUser = ({
+  toggleModal,
+  personalInfo,
+  setPersonalInfo,
+}: ModalEditUser) => {
+  const { register, handleSubmit } = useForm<UpdateData>({
+    resolver: zodResolver(updateUserSchema),
   });
 
-  const editUser = async (data: RegisterData) => {
-    await api.patch<RegisterData>("/user", data);
+  const editUser = async (data: UpdateData) => {
+    const newData = {
+      firstName:
+        data.firstName == "" ? personalInfo?.firstName : data.firstName,
+      lastName: data.lastName == "" ? personalInfo?.lastName : data.lastName,
+      phone: data.phone == "" ? personalInfo?.phone : data.phone,
+      email: data.email == "" ? personalInfo?.email : data.email,
+      password: data.password == "" ? personalInfo?.password : data.password,
+    };
+    const response = await api.patch<User>("/user", newData);
+    setPersonalInfo(response.data);
     toggleModal();
   };
 
