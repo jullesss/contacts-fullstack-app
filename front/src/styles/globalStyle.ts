@@ -16,6 +16,11 @@ export default createGlobalStyle`
     font-size: 60%;   
   }
 
+  span{
+    font-size: 55%;   
+
+  }
+
   @media (min-width: 700px) {
     :root {
       font-size: 62.5%; 
@@ -57,7 +62,40 @@ export default createGlobalStyle`
     border: none;
     outline: none;
     max-width: fit-content;
+    margin-top: 10px;
     font-style: bold;
     color: var(--color-primary);
   }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    height: 50%;
+    max-width: 100%;
+  }
+
+  input,
+  .submitBtn {
+    border-radius: 50px;
+    border: none;
+    height: 40px;
+    text-align: center;
+  }
+
+  input:focus {
+    border: 2px solid var(--color-secondary);
+  }
+
+  .submitBtn {
+    padding: 0px 30px;
+    background-color: var(--color-secondary);
+    color: var(--color-grey-2);
+  }
+  .submitBtn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-grey-1);
+  }
+
 `;

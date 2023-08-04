@@ -20,7 +20,7 @@ const createTokenService = async (
     throw new AppError("Credenciais inválidas", 403);
   }
 
-  const passwordCheck = compare(password, user.password);
+  const passwordCheck = await compare(password, user.password);
   if (!passwordCheck) {
     throw new AppError("Credenciais inválidas", 403);
   }

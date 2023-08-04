@@ -1,6 +1,6 @@
+import { hash } from "bcryptjs";
 import { userRepo } from "../data-source";
-import { User } from "../entities/user.entity";
-import { AppError } from "../errors/appError";
+
 import {
   TUser,
   TUserResponse,
@@ -12,12 +12,8 @@ export const updateUserService = async (
   userData: TUserUpdateRequest,
   foundUser: TUser
 ): Promise<TUserResponse> => {
-  const findUser: User | null = await userRepo.findOne({
-    where: { email: userData.email! },
-  });
-
-  if (findUser) {
-    throw new AppError("User com essas credencias já existe", 409);
+  if (userData.password) {
+    userData.password = await hash(userData.password, 10);
   }
 
   const updateUser = userRepo.create({
