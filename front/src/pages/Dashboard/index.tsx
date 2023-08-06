@@ -91,6 +91,7 @@ export const Dashboard = () => {
           contact.email.toLowerCase().includes(searchValue.toLowerCase()) ||
           contact.phone.toLowerCase().includes(searchValue.toLowerCase())
       );
+
       setContacts(searchResults);
     } else {
       getContacts();
@@ -203,7 +204,7 @@ export const Dashboard = () => {
               </li>
             ))
           ) : (
-            <p>Nenhum contato cadastrado :o</p>
+            <p>Nenhum contato :o</p>
           )}
         </ul>
       </Main>

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../services/api";
 import { Modal } from "../../components/modal/index.tsx";
 import { EditContactData, schema } from "./validator.ts";
+import { toast } from "react-toastify";
 
 export interface ModalEditContact {
   toEditContact: Contact | undefined;
@@ -31,10 +32,15 @@ export const ModalEditContact = ({
       phone: data.phone == "" ? toEditContact?.phone : data.phone,
       email: data.email == "" ? toEditContact?.email : data.email,
     };
-    await api.patch<Contact>(`/contact/${id}/`, newData);
-    const contactsResponse = await api.get<Contact[]>("contact");
-    setContacts(contactsResponse.data);
-    toggleModal();
+    try {
+      await api.patch<Contact>(`/contact/${id}/`, newData);
+      const contactsResponse = await api.get<Contact[]>("contact");
+      setContacts(contactsResponse.data);
+      toggleModal();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
 
   return (

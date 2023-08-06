@@ -6,6 +6,7 @@ import { ContactData, contactSchema } from "./validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../services/api";
 import { Modal } from "../../components/modal/index.tsx";
+import { toast } from "react-toastify";
 
 export interface ModalAddContact {
   toggleModal: () => void;
@@ -25,10 +26,14 @@ export const ModalAddContact = ({
   });
 
   const createContact = async (data: ContactData) => {
-    const response = await api.post<Contact>("/contact", data);
-
-    setContact((previousContact) => [response.data, ...previousContact]);
-    toggleModal();
+    try {
+      const response = await api.post<Contact>("/contact", data);
+      setContact((previousContact) => [response.data, ...previousContact]);
+      toggleModal();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
 
   return (
