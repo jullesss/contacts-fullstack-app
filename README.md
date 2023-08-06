@@ -10,7 +10,7 @@ A aplicação permite:
 - Editar seus próprios dados e também excluir a conta.
 - Cadastrar contatos, com os dados: nome, sobrenome, telefone, email.
 - Editar e também excuir contatos.
-- Buscar por um contato em especídifo.
+- Buscar por um contato em especifico.
 - Buscar por todos os contatos da lista.
 - Login com Autologin.
 
