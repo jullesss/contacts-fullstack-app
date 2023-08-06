@@ -30,8 +30,6 @@ A aplicação permite:
 - React Toastify
 
 ## Instalação e Execução
-
-## Instalação e Execução
 É necessário ter instalado em sua máquina o `Node` e o gerenciador de pacotes `npm`.
 Para executar a aplicação localmente, siga estas etapas:
 
