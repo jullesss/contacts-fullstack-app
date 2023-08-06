@@ -59,7 +59,7 @@ export const ModalEditUser = ({
 
         <label htmlFor="phone">Telefone</label>
         <input
-          type="text"
+          type="number"
           id="phone"
           {...register("phone")}
           placeholder={personalInfo?.phone}

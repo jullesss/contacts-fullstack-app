@@ -18,4 +18,16 @@ export const Container = styled.div`
     border-radius: 30px;
     padding: 30px;
   }
+
+  .buttonsDiv {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .textDiv {
+    p {
+      margin-bottom: 20px;
+    }
+  }
 `;

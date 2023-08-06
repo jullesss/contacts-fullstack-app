@@ -2,23 +2,17 @@ import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   
-  
   :root {
 	--color-primary: #f89c12;
-	--color-primary-2: #cd9238;
 	--color-secondary: #03b898;
 	--color-grey-4: #212529;
-	--color-grey-3: #343a40;
 	--color-grey-2: #e9ecef;
 	--color-grey-1: #f8f9fa;
-	--color-black: #090909;
-
     font-size: 60%;   
   }
 
   span{
     font-size: 55%;   
-
   }
 
   @media (min-width: 700px) {
@@ -37,6 +31,73 @@ export default createGlobalStyle`
   body,html{
     width: 100vw;
     height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .dashCover{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--color-grey-1);
+    padding: 0px 30px 30px 30px;
+    position: fixed;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .personalDetailsDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 130px;
+    text-align: right;
+    gap: 10px;
+    @media (max-width: 400px) {
+      align-items: end;
+    }
+  }
+
+    .personalDetailsIcons {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    justify-content: right;
+    gap: 30px;
+
+    @media (max-width: 400px) {
+      flex-direction: column;
+      justify-content: center;
+      height: 100px;
+      width: 20px;
+    }
+    .trash,
+    .edit {
+      transform: scale(1.5);
+    }
+
+    .trash:hover {
+      color: red;
+    }
+
+    .edit:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  .personalMainDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    > h3 {
+      margin-bottom: 10px;
+    }
+  }
+
+  li{
+    list-style: none;
   }
 
   body, button, input {
@@ -97,5 +158,11 @@ export default createGlobalStyle`
     background-color: var(--color-primary);
     color: var(--color-grey-1);
   }
+
+@media (max-width: 400px) {
+  .accCreatedAt {
+      display: none;
+    }
+}
 
 `;

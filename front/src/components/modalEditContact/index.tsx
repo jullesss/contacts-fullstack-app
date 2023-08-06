@@ -10,11 +10,13 @@ export interface ModalEditContact {
   toEditContact: Contact | undefined;
   toggleModal: () => void;
   children: string;
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
 }
 
 export const ModalEditContact = ({
   toggleModal,
   toEditContact,
+  setContacts,
 }: ModalEditContact) => {
   const { register, handleSubmit } = useForm<EditContactData>({
     resolver: zodResolver(schema),
@@ -30,7 +32,8 @@ export const ModalEditContact = ({
       email: data.email == "" ? toEditContact?.email : data.email,
     };
     await api.patch<Contact>(`/contact/${id}/`, newData);
-
+    const contactsResponse = await api.get<Contact[]>("contact");
+    setContacts(contactsResponse.data);
     toggleModal();
   };
 
@@ -55,7 +58,7 @@ export const ModalEditContact = ({
 
         <label htmlFor="phone">Telefone</label>
         <input
-          type="text"
+          type="number"
           id="phone"
           {...register("phone")}
           placeholder={toEditContact?.phone}

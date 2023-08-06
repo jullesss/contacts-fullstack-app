@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { BsTrash } from "react-icons/bs";
 import { BiEditAlt } from "react-icons/bi";
+import { FiLogOut } from "react-icons/fi";
+import { AiOutlineSearch } from "react-icons/ai";
 import { api } from "../../services/api";
 import { ModalAddContact } from "../../components/modalAddContact/index.tsx";
 import { ModalEditUser } from "../../components/modalEditUser/index.tsx";
 import { ModalEditContact } from "../../components/modalEditContact/index.tsx";
 import { ModalDeleteAcc } from "../../components/modalDeleteAcc/index.tsx";
 import { ModalDeleteContact } from "../../components/modalDeleteContact/index.tsx";
+import { Header, Main, PersonalInfoSection } from "./index.ts";
+import { useNavigate } from "react-router-dom";
 
 export interface User {
   id: number;
@@ -31,19 +35,15 @@ export const Dashboard = () => {
   const [personalInfo, setPersonalInfo] = useState<User>();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
 
-  useEffect(
-    () => {
-      (async () => {
-        const personalInfoResponse = await api.get<User>("user");
-        setPersonalInfo(personalInfoResponse.data);
-        getContacts();
-      })();
-    },
-    [
-      /* contacts */
-    ]
-  );
+  useEffect(() => {
+    (async () => {
+      const personalInfoResponse = await api.get<User>("user");
+      setPersonalInfo(personalInfoResponse.data);
+      getContacts();
+    })();
+  }, []);
 
   const getContacts = async () => {
     const contactsResponse = await api.get<Contact[]>("contact");
@@ -81,7 +81,6 @@ export const Dashboard = () => {
   };
 
   const search = (event: { preventDefault: () => void }) => {
-    console.log(searchValue);
     event.preventDefault();
 
     if (searchValue !== "") {
@@ -92,50 +91,74 @@ export const Dashboard = () => {
           contact.email.toLowerCase().includes(searchValue.toLowerCase()) ||
           contact.phone.toLowerCase().includes(searchValue.toLowerCase())
       );
-      console.log(searchResults);
       setContacts(searchResults);
-
-      if (searchResults.length === 0) {
-        setContacts(contacts);
-        setSearchValue("");
-      }
     } else {
       getContacts();
     }
     setSearchValue("");
   };
 
+  const logout = () => {
+    localStorage.removeItem("my-contacts:token");
+    navigate("/");
+  };
+
   return (
-    <>
-      <section>
-        <h3>
-          {personalInfo?.firstName} {personalInfo?.lastName}
-        </h3>
-        <h4> {personalInfo?.phone} </h4>
-        <h4> {personalInfo?.email} </h4>
-        <span> Conta crida em {personalInfo?.createdAt}</span>
-        <div onClick={toggleEditModal}>
-          <BiEditAlt />
+    <div className="dashCover">
+      <Header>
+        <nav>
+          <div>
+            <img src="./contactIcon.svg" alt="ícone de contato" />
+            <p>My Contacts</p>
+          </div>
+          <div id="logoutBtn" onClick={logout}>
+            <FiLogOut />
+          </div>
+        </nav>
+      </Header>
+      <PersonalInfoSection>
+        <div className="personalMainDiv">
+          <h3>
+            {personalInfo?.firstName} {personalInfo?.lastName}
+          </h3>
+          <h5> {personalInfo?.phone} </h5>
+          <h5> {personalInfo?.email} </h5>
         </div>
-        <div onClick={toggleDeleteAccModal}>
-          <BsTrash />
+        <div className="personalDetailsDiv">
+          <div className="personalDetailsIcons">
+            <div className="edit" onClick={toggleEditModal}>
+              <BiEditAlt />
+            </div>
+            <div className="trash" onClick={toggleDeleteAccModal}>
+              <BsTrash />
+            </div>
+          </div>
+          <span className="accCreatedAt">
+            {" "}
+            Conta crida em <p> {personalInfo?.createdAt}</p>
+          </span>
         </div>
-      </section>
-      <main>
-        <div>
-          <label htmlFor="searchContact">Pesquise um contato</label>
-          <input
-            type="text"
-            id="searchContact"
-            placeholder="Digite o nome..."
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
-          <button onClick={search} type="submit">
-            Pesquisar
-          </button>
+      </PersonalInfoSection>
+      <Main>
+        <div className="divSearch">
+          <div className="divSearchExplanation">
+            <label htmlFor="searchContact">Pesquise um contato</label>
+            <span>Por nome/email/telefone...</span>
+          </div>
+          <div className="divSubmit">
+            <input
+              type="text"
+              id="searchContact"
+              placeholder="Digite aqui..."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <button id="searchBtn" onClick={search} type="submit">
+              <AiOutlineSearch />
+            </button>
+          </div>
         </div>
-        <button type="button" onClick={toggleModal}>
+        <button id="createCttBtn" type="button" onClick={toggleModal}>
           Criar novo contato
         </button>
         {isOpenModal && (
@@ -148,23 +171,42 @@ export const Dashboard = () => {
           {contacts.length > 0 ? (
             contacts.map((contact) => (
               <li key={contact.id}>
-                <div>
-                  {contact.firstName} {contact.lastName} {contact.phone}
-                  {contact.email} <span>Criado em {contact.createdAt}</span>
+                <div id="contactMainDiv" className="personalMainDiv">
+                  <p>
+                    {" "}
+                    {contact.firstName} {contact.lastName}
+                  </p>
+                  <div>
+                    <h5>{contact.phone}</h5>
+                    <h5>{contact.email}</h5>
+                  </div>
                 </div>
-                <div onClick={() => openEditContactModal(contact)}>
-                  <BiEditAlt />
-                </div>
-                <div onClick={() => openDeleteContactModal(contact)}>
-                  <BsTrash />
+                <div className="personalDetailsDiv">
+                  <div className="personalDetailsIcons">
+                    <div
+                      className="edit"
+                      onClick={() => openEditContactModal(contact)}
+                    >
+                      <BiEditAlt />
+                    </div>
+                    <div
+                      className="trash"
+                      onClick={() => openDeleteContactModal(contact)}
+                    >
+                      <BsTrash />
+                    </div>
+                  </div>
+                  <span className="accCreatedAt">
+                    Criado em {contact.createdAt}
+                  </span>
                 </div>
               </li>
             ))
           ) : (
-            <p>Nenhum contato cadastrado</p>
+            <p>Nenhum contato cadastrado :o</p>
           )}
         </ul>
-      </main>
+      </Main>
       {isOpenEditModal && (
         <ModalEditUser
           personalInfo={personalInfo}
@@ -184,6 +226,7 @@ export const Dashboard = () => {
 
       {isOpenEditContactModal && (
         <ModalEditContact
+          setContacts={setContacts}
           toEditContact={toEditContact}
           toggleModal={toggleEditContactModal}
         >
@@ -193,10 +236,11 @@ export const Dashboard = () => {
 
       {isOpenDeleteContactModal && (
         <ModalDeleteContact
+          setContacts={setContacts}
           toDeleteContact={toDeleteContact}
           toggleModal={toggleDeleteContactModal}
         ></ModalDeleteContact>
       )}
-    </>
+    </div>
   );
 };

@@ -22,12 +22,12 @@ export const ModalDeleteAcc = ({ toggleModal }: ModalDeleteAcc) => {
 
   return (
     <Modal toggleModal={toggleModal}>
-      <div>
+      <div className="textDiv">
         <p>Tem certeza que deseja excluir permanenetemente sua conta?</p>
         <p>Tenha em mente que todos os seus contatos serão excluídos também.</p>
       </div>
 
-      <div>
+      <div className="buttonsDiv">
         <button onClick={toggleModal}>Cancelar</button>
         <button onClick={deleteAcc}>Tenho, excluir</button>
       </div>

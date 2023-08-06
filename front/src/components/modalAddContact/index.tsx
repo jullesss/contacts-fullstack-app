@@ -1,8 +1,8 @@
 import React from "react";
 import { Dispatch } from "react";
-import { Contact } from "../../pages/Dashboard";
+import { Contact } from "../../pages/Dashboard/index.tsx";
 import { useForm } from "react-hook-form";
-import { ContactData, schema } from "./validator";
+import { ContactData, contactSchema } from "./validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../services/api";
 import { Modal } from "../../components/modal/index.tsx";
@@ -16,8 +16,12 @@ export const ModalAddContact = ({
   setContact,
   toggleModal,
 }: ModalAddContact) => {
-  const { register, handleSubmit } = useForm<ContactData>({
-    resolver: zodResolver(schema),
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ContactData>({
+    resolver: zodResolver(contactSchema),
   });
 
   const createContact = async (data: ContactData) => {
@@ -37,6 +41,7 @@ export const ModalAddContact = ({
           {...register("firstName")}
           placeholder="Ex.: Vin"
         />
+        {errors.firstName && <span>{errors.firstName.message} </span>}
 
         <label htmlFor="lastName">Sobrenome/Referência</label>
         <input
@@ -45,14 +50,16 @@ export const ModalAddContact = ({
           {...register("lastName")}
           placeholder="Terapeuta"
         />
+        {errors.lastName && <span>{errors.lastName.message} </span>}
 
         <label htmlFor="phone">Telefone</label>
         <input
-          type="text"
+          type="number"
           id="phone"
           {...register("phone")}
           placeholder="(99) 99999-9999"
         />
+        {errors.phone && <span>{errors.phone.message} </span>}
 
         <label htmlFor="email">Email</label>
         <input
@@ -61,6 +68,7 @@ export const ModalAddContact = ({
           {...register("email")}
           placeholder="aaaa@aaa.com"
         />
+        {errors.email && <span>{errors.email.message} </span>}
 
         <button type="submit" className="submitBtn">
           Feito!

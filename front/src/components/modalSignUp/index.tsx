@@ -11,7 +11,11 @@ export interface ModalRegisterUser {
 }
 
 export const ModalRegisterUser = ({ toggleModal }: ModalRegisterUser) => {
-  const { register, handleSubmit } = useForm<RegisterData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterData>({
     resolver: zodResolver(schema),
   });
 
@@ -24,19 +28,49 @@ export const ModalRegisterUser = ({ toggleModal }: ModalRegisterUser) => {
     <Modal toggleModal={toggleModal}>
       <form onSubmit={handleSubmit(createUser)}>
         <label htmlFor="firstName">Nome</label>
-        <input type="text" id="firstName" {...register("firstName")} />
+        <input
+          type="text"
+          id="firstName"
+          {...register("firstName")}
+          placeholder="Ex.: Jun"
+        />
+        {errors.firstName && <span>{errors.firstName.message} </span>}
 
         <label htmlFor="lastName">Sobrenome</label>
-        <input type="text" id="lastName" {...register("lastName")} />
+        <input
+          type="text"
+          id="lastName"
+          {...register("lastName")}
+          placeholder="Khai"
+        />
+        {errors.lastName && <span>{errors.lastName.message} </span>}
 
         <label htmlFor="phone">Telefone</label>
-        <input type="text" id="phone" {...register("phone")} />
+        <input
+          type="number"
+          id="phone"
+          {...register("phone")}
+          placeholder="(99) 99999-9999"
+        />
+        {errors.phone && <span>{errors.phone.message} </span>}
 
         <label htmlFor="email">Email</label>
-        <input type="email" id="email" {...register("email")} />
+        <input
+          type="email"
+          id="email"
+          {...register("email")}
+          placeholder="aaa@aaa.com"
+        />
+        {errors.email && <span>{errors.email.message} </span>}
 
         <label htmlFor="password">Senha</label>
-        <input type="password" id="password" {...register("password")} />
+        <input
+          type="text"
+          id="password"
+          {...register("password")}
+          placeholder="aXy2*zloç!"
+        />
+        {errors.password && <span>{errors.password.message} </span>}
 
         <button type="submit" className="submitBtn">
           Criar conta
